@@ -36,7 +36,7 @@ def -hidden -params 1..2 man-impl %{ %sh{
     if [ "${retval}" -eq 0 ]; then
         printf %s\\n "
                 edit -scratch '*man*'
-                exec '%|cat<space>${colout}<ret>gk'
+                exec '%d|cat<space>${colout}<ret>gk'
                 nop %sh{rm ${colout}}
                 set buffer filetype man
                 set window _manpage '$@'
