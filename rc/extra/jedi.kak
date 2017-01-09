@@ -1,47 +1,75 @@
-decl -hidden str jedi_tmp_dir
-decl -hidden completions jedi_completions
-decl str-list jedi_python_path ''
 
-def jedi-complete -docstring "Complete the current selection" %{
+decl -hidden str jedi_loc %sh{echo $(dirname $kak_source)}
+
+def jedi-start %{
+
+    decl -docstring "The python interpreter to use. You can set this and then run jedi-restart." str python python
+
+    def -hidden jedi-spawn %{ %sh{
+        (
+            $kak_opt_python $kak_opt_jedi_loc/jedikak.py $kak_opt_jedi_dir
+        ) > $kak_opt_jedi_dir/stdout 2> $kak_opt_jedi_dir/stderr < /dev/null &
+        echo set global jedi_proc $! | kak -p $kak_session
+    } }
+
+    decl -hidden str jedi_proc
+    decl -hidden str jedi_dir
+    decl -hidden completions jedi_completions
+
     %sh{
         dir=$(mktemp -d -t kak-jedi.XXXXXXXX)
         mkfifo ${dir}/fifo
-        printf %s\\n "set buffer jedi_tmp_dir ${dir}"
-        printf %s\\n "eval -no-hooks write ${dir}/buf"
+        echo set global jedi_dir $dir
     }
-    %sh{
-        dir=${kak_opt_jedi_tmp_dir}
-        printf %s\\n "eval -draft %{ edit! -fifo ${dir}/fifo *jedi-output* }"
-        (
-            cd $(dirname ${kak_buffile})
-            header="${kak_cursor_line}.${kak_cursor_column}@${kak_timestamp}"
 
-            export PYTHONPATH="$kak_opt_jedi_python_path:$PYTHONPATH" 
-            compl=$(python 2> "${dir}/fifo" <<-END
-		import jedi
-		script=jedi.Script(open('$dir/buf', 'r').read(), $kak_cursor_line, $kak_cursor_column - 1, '$kak_buffile')
-		print(':'.join([(str(c.name).replace("|", "\\|") + "|" + str(c.docstring()).replace("|", "\\|")).replace(":", "\\:") + "|" + str(c.name).replace("|", "\\|") for c in script.completions()]).replace("'", r"\\\\'"))
-		END
-            )
-            printf %s\\n "${compl}" > /tmp/kak-jedi-out
-            printf %s\\n "eval -client ${kak_client} 'echo completed; set %{buffer=${kak_buffile}} jedi_completions \'${header}:${compl}\''" | kak -p ${kak_session}
-            rm -r ${dir}
-        ) > /dev/null 2>&1 < /dev/null &
+    jedi-spawn
+
+    def jedi-stop %{
+        %sh{
+            kill $kak_opt_jedi_proc
+            rm -rf $kak_opt_jedi_dir
+        }
+        def -allow-override -params .. jedi nop
+    }
+
+    def jedi-restart %{
+        %sh{
+            kill $kak_opt_jedi_proc
+        }
+        jedi-spawn
+    }
+
+    def -params 1 jedi %{
+        eval -no-hooks write %sh{ echo $kak_opt_jedi_dir/buf }
+        %sh{
+            echo $1:$kak_cursor_line:$kak_cursor_column:$kak_cursor_byte_offset:$PWD:$kak_timestamp:$kak_buffile:$kak_client:$kak_session > $kak_opt_jedi_dir/fifo
+        }
+    }
+
+    def jedi-enable-autocomplete %{
+        set window completers "option=jedi_completions:%opt[completers]"
+
+        hook window -group jedi-autocomplete InsertIdle .* %{
+            jedi complete
+        }
+    }
+
+    def jedi-disable-autocomplete %{
+        rmhooks window jedi-autocomplete
+    }
+
+    def -hidden -params 2 jedi-docstring %{
+        eval -client %arg{1} %{
+            eval -try-client %opt{docsclient} %{
+                edit! -scratch '*doc*'
+                exec |cat<space> %arg{2}<ret>
+                exec \%|fmt<space> - %val{window_width} <space> -s <ret>
+                exec gg
+                set buffer filetype rst
+                nop %sh{ rm %arg{2} }
+                try %{ rmhl number_lines }
+            }
+        }
     }
 }
 
-def jedi-enable-autocomplete -docstring "Add jedi completion candidates to the completer" %{
-    set window completers "option=jedi_completions:%opt{completers}"
-    hook window -group jedi-autocomplete InsertIdle .* %{ try %{
-        exec -draft <a-h><a-k>\..\'<ret>
-        echo 'completing...'
-        jedi-complete
-    } }
-    alias window complete jedi-complete
-}
-
-def jedi-disable-autocomplete -docstring "Disable jedi completion" %{
-    set window completers %sh{ printf %s\\n "'${kak_opt_completers}'" | sed -e 's/option=jedi_completions://g' }
-    remove-hooks window jedi-autocomplete
-    unalias window complete jedi-complete
-}
