@@ -12,15 +12,22 @@ hook global BufCreate .*[.](py) %{
 # ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 
 add-highlighter -group / regions -default code python \
-    double_string '"""' '"""'            '' \
-    single_string "'''" "'''"            '' \
+    kak           '"""\h*#\h*kak' '"""'      '' \
+    kak           "'''\h*#\h*kak" "'''"      '' \
+    double_docstr '"""' '"""'            '' \
+    single_docstr "'''" "'''"            '' \
     double_string '"'   (?<!\\)(\\\\)*"  '' \
     single_string "'"   (?<!\\)(\\\\)*'  '' \
     comment       '#'   '$'              ''
 
+add-highlighter -group /python/kak           ref kakrc
 add-highlighter -group /python/double_string fill string
 add-highlighter -group /python/single_string fill string
+add-highlighter -group /python/double_docstr fill comment
+add-highlighter -group /python/single_docstr fill comment
 add-highlighter -group /python/comment       fill comment
+
+add-highlighter -group /python/code regex '\b(import)\h+\S+\h+(as)\b' 1:meta 2:meta
 
 %sh{
     # Grammar
@@ -38,27 +45,34 @@ add-highlighter -group /python/comment       fill comment
     functions="${functions}|hex|id|__import__|input|isinstance|issubclass|iter"
     functions="${functions}|len|locals|map|max|memoryview|min|next|oct|open|ord"
     functions="${functions}|pow|print|property|range|repr|reversed|round"
-    functions="${functions}|setattr|slice|sorted|staticmethod|sum|super|type|vars|zip"
+    functions="${functions}|setattr|send|slice|sorted|staticmethod|sum|super|type|vars|zip"
 
     # Add the language's grammar to the static completion list
     printf %s\\n "hook global WinSetOption filetype=python %{
-        set window static_words '${values}:${meta}:${keywords}:${types}:${functions}'
+        set window static_words '${values}:${meta}:as:${keywords}:${types}:${functions}'
     }" | sed 's,|,:,g'
+
+    printf %s "
+        add-highlighter -group /python/code regex '\b(except|with)\b((?!import).)*?\b(as)\b' 3:keyword
+    "
 
     # Highlight keywords
     printf %s "
         add-highlighter -group /python/code regex '\b(${values})\b' 0:value
         add-highlighter -group /python/code regex '\b(${meta})\b' 0:meta
         add-highlighter -group /python/code regex '\b(${keywords})\b' 0:keyword
-        add-highlighter -group /python/code regex '\b(${functions})\b\(' 1:builtin
+        add-highlighter -group /python/code regex '(?<!\.)\b(${functions})\b\(' 1:builtin
     "
 
     # Highlight types and attributes
     printf %s "
-        add-highlighter -group /python/code regex '\b(${types})\b' 0:type
+        add-highlighter -group /python/code regex '(?<!\.)\b(${types})\b' 0:type
         add-highlighter -group /python/code regex '@[\w_]+\b' 0:attribute
     "
 }
+
+add-highlighter -group /python/code regex (?<=[\w\s\d'"_])(<=|<<|>>|>=|<>|<|>|!=|==|\||\^|&|\+|-|\*\*|\*|//|/|%|~) 0:operator
+add-highlighter -group /python/code regex (?<=[\w\s\d'"_])((?<![=<>!])=(?![=])|[+*-]=) 0:builtin
 
 # Commands
 # ‾‾‾‾‾‾‾‾
