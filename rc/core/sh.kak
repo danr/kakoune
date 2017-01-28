@@ -16,7 +16,7 @@ add-highlighter -group /sh/heredoc fill string
 %sh{
     # Grammar
     keywords="alias|bind|builtin|caller|case|cd|command|coproc|declare|do|done"
-    keywords="${keywords}|echo|elif|else|enable|esac|exit|fi|for|function|help"
+    keywords="${keywords}|echo|eval|elif|else|enable|esac|exit|fi|for|function|help"
     keywords="${keywords}|if|in|let|local|logout|mapfile|printf|read|readarray"
     keywords="${keywords}|readonly|return|select|set|shift|source|test|then"
     keywords="${keywords}|time|type|typeset|ulimit|unalias|until|while"
