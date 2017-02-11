@@ -7,6 +7,7 @@ face variable green
 face module green
 face function cyan
 face string magenta
+face docstring cyan
 face keyword blue
 face operator yellow
 face attribute green

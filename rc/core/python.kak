@@ -23,8 +23,8 @@ add-highlighter -group / regions -default code python \
 add-highlighter -group /python/kak           ref kakrc
 add-highlighter -group /python/double_string fill string
 add-highlighter -group /python/single_string fill string
-add-highlighter -group /python/double_docstr fill comment
-add-highlighter -group /python/single_docstr fill comment
+add-highlighter -group /python/double_docstr fill docstring
+add-highlighter -group /python/single_docstr fill docstring
 add-highlighter -group /python/comment       fill comment
 
 add-highlighter -group /python/code regex '\b(import)\h+\S+\h+(as)\b' 1:meta 2:meta
