@@ -80,7 +80,7 @@ add-highlighter -group /python/code regex (?<=[\w\s\d'"_])((?<![=<>!])=(?![=])|[
 def -hidden python-indent-on-new-line %{
     eval -draft -itersel %{
         # copy '#' comment prefix and following white spaces
-        try %{ exec -draft k <a-x> s ^\h*#\h* <ret> y jgh P }
+        # try %{ exec -draft k <a-x> s ^\h*#\h* <ret> y jgh P }
         # preserve previous line indent
         try %{ exec -draft \; K <a-&> }
         # cleanup trailing whitespaces from previous line
