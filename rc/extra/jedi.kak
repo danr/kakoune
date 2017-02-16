@@ -47,11 +47,29 @@ def jedi-start %{
     }
 
     def jedi-enable-autocomplete %{
-        set window completers "option=jedi_completions:%opt[completers]"
+        set window completers "option=jedi_completions:filename"
 
-        hook window -group jedi-autocomplete InsertIdle .* %{
+        hook window -group jedi-autocomplete InsertChar \. %{
             jedi complete
         }
+
+        hook window -group jedi-autocomplete InsertChar '^[ ,]$' %{
+            try %{
+                exec -draft '<esc>x<a-k>(import|from)<ret>'
+                jedi complete
+            }
+        }
+
+        hook window -group jedi-autocomplete InsertChar '^[(), ]$' %{
+            jedi call_signatures
+        }
+
+        hook window -group jedi-autocomplete InsertIdle .* %{
+            jedi call_signatures
+        }
+
+        map window insert <c-x> '<a-;>:jedi complete<ret>'
+        map window insert <c-s> '<a-;>:jedi call_signatures<ret>'
     }
 
     def jedi-disable-autocomplete %{

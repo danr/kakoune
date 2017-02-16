@@ -38,16 +38,16 @@ add-highlighter -group / regions -default code kakrc \
 }
 
 add-highlighter -group /kakrc/code regex \brgb:[0-9a-fA-F]{6}\b 0:value
-add-highlighter -group /kakrc/code regex (?:\bhook)\h+(?:-group\h+(\S+)\h+)?(?:(global|buffer|window)|(\S+))\h+(\S+) 1:identifier 2:attribute 3:Error 4:variable
+add-highlighter -group /kakrc/code regex (?:\bhook)\h+(?:-group\h+(\S+)\h+)?(?:(global|buffer|window)|(\S+))\h+(\S+) 1:variable 2:attribute 3:Error 4:variable
 add-highlighter -group /kakrc/code regex (?:\bset)\h+(?:-add\h+)?(?:(global|buffer|window)|(\S+))\h+(\S+) 1:attribute 2:Error 3:variable
 add-highlighter -group /kakrc/code regex (?:\bmap|\bunmap)\h+(?:(global|buffer|window)|(\S+))\h+(?:(normal|insert|menu|prompt|goto|view|user|object)|(\S+))\h+(\S+) 1:attribute 2:Error 3:attribute 4:Error 5:variable
-add-highlighter -group /kakrc/code regex (?:\bdecl|\bdeclare-option)\h+(?:-hidden\h+)?(?:(int|bool|str|regex|int-list|str-list|line-flags|completions|range-faces)|(\S+))\h+(\S+) 1:type 2:Error 3:identifier
-add-highlighter -group /kakrc/code regex (?:\balias)\h+(?:(global|buffer|window)|(\S+))?\h+(\S+) 1:attribute 2:Error 3:identifier
-add-highlighter -group /kakrc/code regex (?:\brmhl|\bremove-highlighter)\h+(\S+)(?:\h+(\S+))? 1:identifier 2:Error
+add-highlighter -group /kakrc/code regex (?:\bdecl|\bdeclare-option)\h+(?:-hidden\h+)?(?:(int|bool|str|regex|int-list|str-list|line-flags|completions|range-faces)|(\S+))\h+(\S+) 1:type 2:Error 3:variable
+add-highlighter -group /kakrc/code regex (?:\balias)\h+(?:(global|buffer|window)|(\S+))?\h+(\S+) 1:attribute 2:Error 3:variable
+add-highlighter -group /kakrc/code regex (?:\brmhl|\bremove-highlighter)\h+(\S+)(?:\h+(\S+))? 1:variable 2:Error
 
-add-highlighter -group /kakrc/code regex (?:\baddhl|\badd-highlighter)\h+(?:(?:(-group)\h+(\S+)\h+)|(-\S+)\h+)? 2:identifier 3:Error 4:identifier
+add-highlighter -group /kakrc/code regex (?:\baddhl|\badd-highlighter)\h+(?:(?:(-group)\h+(\S+)\h+)|(-\S+)\h+)? 2:variable 3:Error 4:variable
 add-highlighter -group /kakrc/code regex (?:\baddhl|\badd-highlighter)\h+(?:-group\h+\S+\h+|)(\bregex\b|\bdynregex\b)\h+((?:(?:(?<!\\\\)\n)|\S)+)((:?\h+\d+:\S+)*) 1:attribute 2:string 3:attribute
-add-highlighter -group /kakrc/code regex (?:\baddhl|\badd-highlighter)\h+(?:-group\h+\S+\h+|)(\bfill|\bref|\bgroup)\h+(\S+) 1:attribute 2:identifier
+add-highlighter -group /kakrc/code regex (?:\baddhl|\badd-highlighter)\h+(?:-group\h+\S+\h+|)(\bfill|\bref|\bgroup)\h+(\S+) 1:attribute 2:variable
 
 add-highlighter -group /kakrc/double_string fill string
 add-highlighter -group /kakrc/single_string fill string

@@ -34,7 +34,7 @@ add-highlighter -group /python/code regex '\b(import)\h+\S+\h+(as)\b' 1:meta 2:m
     values="True|False|None"
     meta="import|from"
     # Keyword list is collected using `keyword.kwlist` from `keyword`
-    keywords="and|as|assert|break|class|continue|def|del|elif|else|except|exec"
+    keywords="and|as|assert|async|break|class|continue|def|del|elif|else|except|exec"
     keywords="${keywords}|finally|for|global|if|in|is|lambda|not|or|pass|print"
     keywords="${keywords}|raise|return|try|while|with|yield"
     types="bool|buffer|bytearray|bytes|complex|dict|file|float|frozenset|int"

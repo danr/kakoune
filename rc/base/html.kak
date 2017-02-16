@@ -26,15 +26,16 @@ add-highlighter -group /html/comment fill comment
 add-highlighter -group /html/style  ref css
 add-highlighter -group /html/script ref javascript
 
+add-highlighter -group /html/tag fill attribute
 add-highlighter -group /html/tag regex </?([?!\w]+) 1:keyword
 
 add-highlighter -group /html/tag regions content \
-    string '"' (?<!\\)(\\\\)*"      '' \
-    string "'" "'"                  ''
+    string '="' (?<!\\)(\\\\)*"      '' \
+    string "='" "'"                  ''
 
-add-highlighter -group /html/tag/content/string fill string
-add-highlighter -group /html/tag regex \b(\w+)(=) 1:identifier 2:operator
-add-highlighter -group /html/tag regex \s(\w+)\b(?!=) 1:attribute
+add-highlighter -group /html/tag/content/string regex \A(=)(.*)\Z 1:operator 2:string
+#add-highlighter -group /html/tag regex \b(\w+)(=) 1:identifier 2:operator
+#add-highlighter -group /html/tag regex \s(\w+)\b(?!=) 1:attribute
 
 # Commands
 # ‾‾‾‾‾‾‾‾

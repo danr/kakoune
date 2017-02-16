@@ -66,21 +66,32 @@ def process(dir, action, line, col, byte, pwd, timestamp, buffile, client, sessi
         tell_kak(session,msg)
         return
 
+    if action == 'call_signatures':
+        for cs in script.call_signatures():
+            params=[p.name for p in cs.params]
+            if cs.index is not None:
+                params[cs.index]='*'+params[cs.index]+'*'
+            msg='(' + ','.join(params) + ')'
+            y,x=cs.bracket_start
+            info='info -anchor '+str(y)+'.'+str(x+1)+\
+                 ' -placement above %{' + msg + '}'
+            """
+            info=info+'''
+            hook -group once buffer InsertCompletionHide .* %{
+                rmhooks buffer once
+            ''' + info + '''
+            }
+            hook -group once buffer InsertCompletionShow .* %{
+                rmhooks buffer once
+            }
+            '''
+            """
+            tell_kak(session, "eval -client "+client+' %{'+info+'}')
+        return
 
     # other actions: make cursors at all usages of a variable
 
     msgs=[]
-
-    for cs in script.call_signatures():
-        params=[p.name for p in cs.params]
-        if cs.index is not None:
-            params[cs.index]='*'+params[cs.index]+'*'
-        msg='(' + ','.join(params) + ')'
-        y,x=cs.bracket_start
-        msgs+=["decl -hidden str jedi_func_info '" + esc("\\'",msg) + "'"]
-        info='info -anchor '+str(y)+'.'+str(x+1)+\
-             ' -placement above %opt{jedi_func_info}'
-        msgs+=["eval -client "+client+' %{'+info+'}']
 
     jcs = script.completions()
 

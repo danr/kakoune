@@ -32,7 +32,7 @@ add-highlighter -group /haskell/code regex \b(case|do|else|if|in|let|mdo|of|proc
 
                                  # matches uppercase identifiers:  Monad Control.Monad
                                  # not non-space separated dot:    Just.const
-add-highlighter -group /haskell/code regex \b([[:upper:]]['\w_]*\.)*[[:upper:]]['\w_]*(?!['\w_])(?![.[[:lower:]]) 0:identifier
+add-highlighter -group /haskell/code regex \b([[:upper:]]['\w_]*\.)*[[:upper:]]['\w_]*(?!['\w_])(?![.[[:lower:]]) 0:variable
 
                                  # matches infix identifier: `mod` `Apa._T'M`
 add-highlighter -group /haskell/code regex `\b([[:upper:]]['\w_]+\.)*[\w_]['\w_]*` 0:operator
