@@ -12,20 +12,24 @@ hook global BufCreate .*[.](py) %{
 # ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 
 add-highlighter -group / regions -default code python \
-    kak           '"""\h*#\h*kak' '"""'      '' \
-    kak           "'''\h*#\h*kak" "'''"      '' \
-    double_docstr '"""' '"""'            '' \
-    single_docstr "'''" "'''"            '' \
-    double_string '"'   (?<!\\)(\\\\)*"  '' \
-    single_string "'"   (?<!\\)(\\\\)*'  '' \
-    comment       '#'   '$'              ''
+    kak       '"""\h*#\h*kak' '"""'      '' \
+    kak       "'''\h*#\h*kak" "'''"      '' \
+    docstring '"""' '"""'            '' \
+    docstring "'''" "'''"            '' \
+    string    '"'   (?<!\\)(\\\\)*"  '' \
+    string    "'"   (?<!\\)(\\\\)*'  '' \
+    comment   '#'   '$'              ''
 
-add-highlighter -group /python/kak           ref kakrc
-add-highlighter -group /python/double_string fill string
-add-highlighter -group /python/single_string fill string
-add-highlighter -group /python/double_docstr fill docstring
-add-highlighter -group /python/single_docstr fill docstring
-add-highlighter -group /python/comment       fill comment
+add-highlighter -group /python/kak        ref kakrc
+add-highlighter -group /python/docstring  ref py-docstring
+add-highlighter -group /python/string    fill string
+add-highlighter -group /python/comment   fill comment
+
+add-highlighter -group / regions -default docstring py-docstring \
+    python '>>> \K'    '\Z' '' \
+    python '\.\.\. \K' '\Z' ''
+add-highlighter -group /py-docstring/python     ref python
+add-highlighter -group /py-docstring/docstring fill docstring
 
 add-highlighter -group /python/code regex '\b(import)\h+\S+\h+(as)\b' 1:meta 2:meta
 
