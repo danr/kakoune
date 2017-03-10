@@ -12,6 +12,7 @@ def tell_kak(session, msg):
     print(msg)
     p.communicate(msg.encode('utf-8'))
 
+
 def esc(cs,s):
     for c in cs:
         s=s.replace(c, "\\"+c)
@@ -46,27 +47,23 @@ def process(dir, action, line, col, byte, pwd, timestamp, buffile, client, sessi
             descs+=[c(y,x)+','+c(y,x+len(use.name)-1)]
         if not descs:
             return
-        desc=':'.join(descs)+'@'+buffile+'%'+timestamp
-        tell_kak(session, 'set-register j '+desc)
-        tell_kak(session, 'eval -client '+client+' %{exec %{"jz}}')
-        return
+        desc=':'.join(descs)
+        tell_kak(session, 'eval -client '+client+' %{select '+desc+'}')
 
-    if action == 'docstring':
+    elif action == 'docstring':
         docstring=script.goto_definitions()[0].docstring()
         with tempfile.NamedTemporaryFile(
                'w',encoding='utf-8',dir=dir,delete=False) as fd:
             fd.write(docstring)
             tell_kak(session, ' '.join(('jedi-docstring',client,fd.name)))
-        return
 
-    if action == 'goto':
+    elif action == 'goto':
         d=script.goto_definitions()[0]
         msg=' '.join(('eval -client',client,
                       'edit', d.module_path, str(d.line), str(d.column+1)))
         tell_kak(session,msg)
-        return
 
-    if action == 'call_signatures':
+    elif action == 'call_signatures':
         for cs in script.call_signatures():
             params=[p.name for p in cs.params]
             if cs.index is not None:
@@ -75,7 +72,6 @@ def process(dir, action, line, col, byte, pwd, timestamp, buffile, client, sessi
             y,x=cs.bracket_start
             info='info -anchor '+str(y)+'.'+str(x+1)+\
                  ' -placement above %{' + msg + '}'
-            """
             info=info+'''
             hook -group once buffer InsertCompletionHide .* %{
                 rmhooks buffer once
@@ -85,25 +81,20 @@ def process(dir, action, line, col, byte, pwd, timestamp, buffile, client, sessi
                 rmhooks buffer once
             }
             '''
-            """
             tell_kak(session, "eval -client "+client+' %{'+info+'}')
-        return
 
-    # other actions: make cursors at all usages of a variable
+    else:
 
-    msgs=[]
+        if source[byte].isspace():
+            def prev(s):
+                return s == source[byte-len(s):byte]
+            if prev('import') or prev('from'):
+                pass
+            else:
+                return
 
-    jcs = script.completions()
+        jcs = script.completions()
 
-    if source[byte].isspace():
-        def prev(s):
-            return s == source[byte-len(s):byte]
-        if prev('import') or prev('from'):
-            pass
-        else:
-            jcs=[]
-
-    if jcs:
         offset = len(jcs[0].name) - len(jcs[0].complete)
 
         compl=str(line)+'.'+str(col-offset)+'@'+timestamp+':'
@@ -113,9 +104,8 @@ def process(dir, action, line, col, byte, pwd, timestamp, buffile, client, sessi
         compl+=':'.join(map(format_completer, jcs))
         compl=esc("'",compl)
 
-        msgs=["set buffer="+buffile+" jedi_completions '"+compl+"'"]+msgs
+        msgs=["set buffer="+buffile+" jedi_completions '"+compl+"'"]
 
-    if msgs:
         tell_kak(session, '\n'.join(msgs)+'\n')
 
 def main(dir):

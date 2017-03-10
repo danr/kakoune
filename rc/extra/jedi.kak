@@ -55,7 +55,7 @@ def jedi-start %{
 
         hook window -group jedi-autocomplete InsertChar '^[ ,]$' %{
             try %{
-                exec -draft '<esc>x<a-k>(import|from)<ret>'
+                exec -draft '<esc><a-x><a-k>(import|from)<ret>'
                 jedi complete
             }
         }
