@@ -85,18 +85,18 @@ try %{
         face SecondarySelection ${base03},${base0}
         face LineNumbers        ${base0},${base02}
         face LineNumberCursor   ${base2},${base02}
-        face MenuBackground     ${base1},rgb:e8eee2
+        face MenuBackground     ${base1},rgb:eeeeee
         face MenuForeground     ${base03},${blue}
-        face MenuInfo           ${base2},rgb:e8eee2
-        face Information        ${magenta},rgb:e8eee2
+        face MenuInfo           ${base2},rgb:eeeeee
+        face Information        ${base3},rgb:cccccc
         face Error              ${red}+b
         face StatusLine         ${base1},${base03}
         face StatusLineMode     ${violet}
-        face StatusLineInfo     ${magenta}
-        face StatusLineValue    ${base0}
+        face StatusLineInfo     ${violet}
+        face StatusLineValue    ${blue}
         face StatusCursor       default+r
         face Prompt             ${base0},${base03}
-        face MatchingChar       ${magenta},rgb:e8eee2
+        face MatchingChar       ${magenta},rgb:eeeeee
         # default+b
         face BufferPadding      ${base01},${base03}
 
