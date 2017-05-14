@@ -1,7 +1,7 @@
 # solarized theme
 
 try %{
-  decl bool solarized_light true
+  decl bool solarized_light false
 }
 
 %sh{
@@ -54,17 +54,17 @@ try %{
 
     echo "
         # then we map them to code
-        face value      ${cyan}
+        face value      ${green}
         face variable   ${violet}
-        face attribute  ${violet}
+        face attribute  ${green}
         face keyword    ${blue}
         face identifier ${base00}
         face type       ${cyan}
-        face string     ${magenta}
-        face builtin    ${violet}
+        face string     ${yellow}
+        face builtin    ${base1}
         face meta       ${violet}
-        face comment    ${yellow}
-        face docstring  ${orange}
+        face comment    ${cyan}
+        face docstring  ${green}
 
         # and markup
         face title      ${yellow}
@@ -78,17 +78,17 @@ try %{
         face list       ${yellow}
 
         # and built in faces
-        face Default            ${base2},${base03}
+        face Default            ${base1},${base03}
         face PrimaryCursor      ${base03},${magenta}
         face PrimarySelection   ${base03},${cyan}
         face SecondaryCursor    ${base03},${base2}
         face SecondarySelection ${base03},${base0}
         face LineNumbers        ${base0},${base02}
         face LineNumberCursor   ${base2},${base02}
-        face MenuBackground     ${base1},rgb:eeeeee
-        face MenuForeground     ${base03},${blue}
-        face MenuInfo           ${base2},rgb:eeeeee
-        face Information        ${base3},rgb:cccccc
+        face MenuBackground     ${base1},${base02}
+        face MenuForeground     ${base03},${green}
+        face MenuInfo           ${base00},${base02}
+        face Information        ${base03},${yellow}
         face Error              ${red}+b
         face StatusLine         ${base1},${base03}
         face StatusLineMode     ${violet}
@@ -96,7 +96,7 @@ try %{
         face StatusLineValue    ${blue}
         face StatusCursor       default+r
         face Prompt             ${base0},${base03}
-        face MatchingChar       ${magenta},rgb:eeeeee
+        face MatchingChar       ${magenta},${base02}+b
         # default+b
         face BufferPadding      ${base01},${base03}
 
