@@ -168,6 +168,7 @@ private:
     int m_shift_function_key = default_shift_function_key;
 
     bool m_set_title = true;
+    String m_title_line;
 
     DisplayAtom m_padding_char = DisplayAtom("~");
     bool m_padding_fill = false;
